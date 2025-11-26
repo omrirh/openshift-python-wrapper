@@ -1,55 +1,37 @@
 # Generated using https://github.com/RedHatQE/openshift-python-wrapper/blob/main/scripts/resource/README.md
 
-from typing import Any, Dict, Optional
-from ocp_resources.resource import NamespacedResource, MissingRequiredArgumentError
+
+from typing import Any
+
+from ocp_resources.resource import MissingRequiredArgumentError, NamespacedResource
 
 
 class VirtualMachineInstanceReplicaSet(NamespacedResource):
     """
-    VirtualMachineInstance is *the* VirtualMachineInstance Definition. It
-    represents a virtual machine in the runtime environment of kubernetes.
+    VirtualMachineInstance is *the* VirtualMachineInstance Definition. It represents a virtual machine in the runtime environment of kubernetes.
     """
 
     api_group: str = NamespacedResource.ApiGroup.KUBEVIRT_IO
 
     def __init__(
         self,
-        paused: Optional[bool] = None,
-        replicas: Optional[int] = None,
-        selector: Optional[Dict[str, Any]] = None,
-        template: Optional[Dict[str, Any]] = None,
+        paused: bool | None = None,
+        replicas: int | None = None,
+        selector: dict[str, Any] | None = None,
+        template: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
-        """
+        r"""
         Args:
-            paused(bool): Indicates that the replica set is paused.
+            paused (bool): Indicates that the replica set is paused.
 
-            replicas(int): Number of desired pods. This is a pointer to distinguish between explicit
-              zero and not specified. Defaults to 1.
+            replicas (int): Number of desired pods. This is a pointer to distinguish between
+              explicit zero and not specified. Defaults to 1.
 
-            selector(Dict[Any, Any]): Label selector for pods. Existing ReplicaSets whose pods are selected by
-              this will be the ones affected by this deployment.
+            selector (dict[str, Any]): Label selector for pods. Existing ReplicaSets whose pods are selected
+              by this will be the ones affected by this deployment.
 
-              FIELDS:
-                matchExpressions	<[]Object>
-                  matchExpressions is a list of label selector requirements. The requirements
-                  are ANDed.
-
-                matchLabels	<map[string]string>
-                  matchLabels is a map of {key,value} pairs. A single {key,value} in the
-                  matchLabels map is equivalent to an element of matchExpressions, whose key
-                  field is "key", the operator is "In", and the values array contains only
-                  "value". The requirements are ANDed.
-
-            template(Dict[Any, Any]): Template describes the pods that will be created.
-
-              FIELDS:
-                metadata	<Object>
-                  <no description>
-
-                spec	<Object>
-                  VirtualMachineInstance Spec contains the VirtualMachineInstance
-                  specification.
+            template (dict[str, Any]): Template describes the pods that will be created.
 
         """
         super().__init__(**kwargs)
@@ -62,21 +44,23 @@ class VirtualMachineInstanceReplicaSet(NamespacedResource):
     def to_dict(self) -> None:
         super().to_dict()
 
-        if not self.yaml_file:
-            if not all([
-                self.selector,
-                self.template,
-            ]):
-                raise MissingRequiredArgumentError(argument="selector, template")
+        if not self.kind_dict and not self.yaml_file:
+            if self.selector is None:
+                raise MissingRequiredArgumentError(argument="self.selector")
+
+            if self.template is None:
+                raise MissingRequiredArgumentError(argument="self.template")
 
             self.res["spec"] = {}
             _spec = self.res["spec"]
 
-            self.res["selector"] = self.selector
-            self.res["template"] = self.template
+            _spec["selector"] = self.selector
+            _spec["template"] = self.template
 
             if self.paused is not None:
                 _spec["paused"] = self.paused
 
-            if self.replicas:
+            if self.replicas is not None:
                 _spec["replicas"] = self.replicas
+
+    # End of generated code
